@@ -1,0 +1,13 @@
+*~
+*.o
+build/
+CMakeLists.txt.user
+kronrod2
+gama/
+geodet-pc-mgtso1/
+geodet.pc/
+
+# symlink
+cmp-gso
+cmp-gso.cpp-*
+octave-workspace

@@ -1,0 +1,34 @@
+Výstupní matice. Character výsledků získaných produrou MTGSO1 závisí
+na hodnotě parametru MODE:
+
+MODE = 1 : v pravé horní submaticí jsou uloženy opravy
+           na místech absolutních členů rovnic oprav;
+	   ve sloupcích pravé dolní submatice
+	   jsou uloženy odpovídající vektory neznámých,
+           reprezentující
+
+             - jediné řešení úlohy (při DF = O),
+	     - jedno z řešení, v němž DF neznámých bylo anulováno
+	       (při DF > O) - indexy anulovaných neznámých jsou uloženy
+	       v poli INDS;
+
+MODE = 2 : výsledky jsou obdobné jako při MODE = 1
+           pouze s tím rozdílem, že v případě DF > 0 mají subvektory
+           vytvořené z volitelně vybraných složek vektorů neznámých
+           (prostřednictvím uživatelem zadaných indexů
+           v poli INDX) minimální normu;
+
+MODE = 3 : obsah horních submatic výstupní matice je stejný jako ve
+           vstupní matici; obsah dolních submatic má shodnou
+           interpretaci jako při MODE = 2.
+
+V levých submaticích jsou ve všech případech uloženy
+faktorizované matice váhových koeficientů vyrovnaných
+hodnot. Jednotlivé váhové koeficienty jsou rovny
+skalárním součinům odpovídajících řádků těchto
+submatic; v případě, že současně platí MODE = 1 a
+DF > O, lze toto pravidlo aplikovat jen tehdy, pokud
+byly před výpočtem skalárních součinů anulovány prvky
+levé dolní submatice ležící ve sloupcích s indexy
+anulovaných neznámých. Tyto indexy dává procedura
+uživateli k dispozici V poli INDS.
