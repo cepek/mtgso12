@@ -1,0 +1,94 @@
+\documentclass{report}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{amssymb}
+\lstset{
+  basicstyle=\ttfamily,
+  mathescape
+}
+\hyphenation{Gram-Schmidt}
+
+\newcommand{\Input}{\mathbf{input}\ }
+\newcommand{\For}{\mathbf{for}\ }
+\newcommand{\End}{\mathbf{end}\ }
+
+\pagestyle{empty}
+\begin{document}
+
+
+% Unofficial translation excerpt based on
+% https://cs.wikipedia.org/wiki/Gramova-Schmidtova_ortogonalizace
+
+\noindent\textbf{Gram-Schmidt process}
+
+\noindent{\small\rule{0pt}{2.7ex}Based on
+  \texttt{https://cs.wikipedia.org/wiki/Gramova-Schmidtova\_ortogonalizace}}
+
+%\vspace{1ex}\noindent{Algorithm}
+
+\begin{lstlisting}
+00: $\Input a_1,\ldots,a_n$
+01: $r_{1,1} := \|a_1\|_2$
+02: $q_1 := a_1/r_{1,1}$
+03: $\For k := 2,\ldots,n$
+04:   $p := a_k$
+05:   $\For j := 1,\ldots,k-1$
+06:      $r_{j,k} := q_j^Tp = \langle p,q_j\rangle$
+07:   $\End$
+08:   $\For j := 1,\ldots,k-1$
+09:      $p := p - q_jr_{j,k}$
+10:   $\End$
+11:   $r_{k,k} := \|p\|_2$
+12:   $q_k := p/r_{k,k}$
+13: $\End$
+\end{lstlisting}
+
+\noindent The Gram-Schmidt process as described above is referred to
+as \textbf{classical Gram-Schmidt (CGS)} and is newer than the
+original variant today referred to as \textbf{modified Gram-Schmidt
+  (MGS)}. MGS is obtained from CGS simply by removing lines 07 and 08,
+that is by joining both inner loops. Iterative orthogonalization can
+be used to avoid small deviations from orthogonality in the
+Gram–Schmidt process. The variant repeating both inner loops twice is
+known as \textbf{iterative classical Gram-Schmidt (ICGS)}.
+
+~
+
+% Octave:   A = [ones(1,20); eye(20)*1e-7]; cond(A)
+%
+\noindent Let's considet \textbf{L\"auchli matrix} defined as
+%
+$$
+A = \left[\begin{array}{ccc}
+    1    & \ldots & 0 \\
+    \rho &        & 0 \\
+    & \ddots      &   \\
+    0    &        & \rho \\
+  \end{array}\right] \in \mathbb{R}^{(n+1)\times n},\quad n=20,
+  \quad\rho=10^{-7},\quad \kappa_2 \approx 4.47\times 10^{-7},
+$$
+%
+where $\kappa_2$ is condition number of matrix $A$. Considering
+standard hardware arithmetics for double precision $\epsilon \approx
+2.22\times 10^{-16} $, then loss of orthogonality corresponding to the
+above given algorithms applied to L\"auchli matrix is given in the
+second column in the following table. In the third column is given
+general formula valid for arbitrary matrix $A.$
+
+~
+
+\begin{center}
+\begin{tabular}{|l|cc|}\hline
+            & \multicolumn{2}{c|}{Loss of Orthogonality} \\
+  Algorithm &  L\"auchli Matrix & General Matrix \\
+  \hline
+  \hline
+  CGS  \rule{0pt}{2.4ex} % add some vertical space needed in the third column
+       & $2.2\times 10^{-2} $ & $\kappa_2^2(A)\epsilon_M$ \\
+  MGS  & $2.2\times 10^{-9} $ & $\kappa_2  (A)\epsilon_M$ \\
+  ICGS & $2.4\times 10^{-16}$ & $\epsilon_M$ \\
+  \hline
+\end{tabular}
+\end{center}
+
+\end{document}
