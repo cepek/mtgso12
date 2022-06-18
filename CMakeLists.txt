@@ -17,3 +17,5 @@ include_directories(gama/lib .)
 
 add_executable(cmp-gso cmp-gso.cpp gso/mtgso1.f gso/mtgso2.f
                icgs.h icgs.cpp)
+
+add_executable(lauchli lauchli.cpp icgs.h icgs.cpp gso/mtgso1.f)

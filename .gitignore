@@ -2,7 +2,6 @@
 *.o
 build/
 CMakeLists.txt.user
-kronrod2
 gama/
 geodet-pc-mgtso1/
 geodet.pc/
@@ -10,4 +9,11 @@ geodet.pc/
 # symlink
 cmp-gso
 cmp-gso.cpp-*
+
 octave-workspace
+
+# icgs.tex
+*.aux
+*.log
+*.out
+*.pdf
