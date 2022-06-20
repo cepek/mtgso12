@@ -17,3 +17,7 @@ octave-workspace
 *.log
 *.out
 *.pdf
+
+# randmat directory
+randmat.dat
+randmat.txt
