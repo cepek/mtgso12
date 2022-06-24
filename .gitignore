@@ -10,6 +10,7 @@ geodet.pc/
 cmp-gso
 cmp-gso.cpp-*
 
+randmat
 octave-workspace
 
 # icgs.tex
@@ -18,6 +19,9 @@ octave-workspace
 *.out
 *.pdf
 
-# randmat directory
-randmat.dat
-randmat.txt
+randm*.dat
+randm*.txt
+plot.data
+
+.gitignore.rej
+Notes

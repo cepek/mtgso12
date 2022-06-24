@@ -1,6 +1,9 @@
 # sed '/^#/d'
 #
-all :
-	octave < randmat.m
-	sed '/^#/d' randmat.dat > randmat.txt
-#	head randmat.txt
+INPUTS  := $(wildcard *.dat)
+OUTPUTS := $(patsubst %.dat,%.txt,$(INPUTS))
+
+all : $(OUTPUTS)
+
+%.txt : %.dat
+	sed '/^#/d' $<  > $@

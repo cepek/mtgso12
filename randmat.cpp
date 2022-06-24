@@ -3,7 +3,9 @@
 #include <iomanip>
 #include <sstream>
 #include <vector>
+#include <map>
 #include <algorithm>
+#include <cmath>
 #include <matvec/matvec.h>
 #include "icgs.h"
 
@@ -11,6 +13,19 @@
 
 #include <chrono>
 #include <memory>
+
+#define TIMING
+#ifdef TIMING
+struct Timing {
+  int n {}, m {};      // n and m must be set by any or by all tests
+  double icgs {0};
+  double gama {0}; // full time, adjustment only
+  double mtgso1 {0};
+};
+
+std::map<int, Timing> timings;
+#endif
+
 
 using std::cout;
 using std::endl;
@@ -56,10 +71,22 @@ int test_icgs(int index)
 
   //std::cout << "M = " << m << "   N = " << n << "\n\n";
 
+#ifdef TIMING
+  auto& timing = timings[index];
+  timing.n = n;
+  timing.m = m;
+
+  auto start = std::chrono::steady_clock::now();
+#endif
   ICGS icgs;
   icgs.reset(A, m, n);
   icgs.icgs1();
   icgs.icgs2();
+#ifdef TIMING
+  auto end = std::chrono::steady_clock::now();
+  std::chrono::duration<double> elapsed_seconds = end-start;
+  timing.icgs = elapsed_seconds.count();
+#endif
 
 #if 0
   std::cout << "\nfile      : " << Vfiles[index] << "\n";
@@ -104,11 +131,22 @@ int test_gama(int index)
   int n = A.cols();
   int m = A.rows();
 
+#ifdef TIMING
+  auto& timing = timings[index];
+  timing.n = n;
+  timing.m = m;
+
+  auto start = std::chrono::steady_clock::now();
+#endif
   GNU_gama::AdjGSO<double, int, GNU_gama::Exception::matvec> gama;
   gama.reset(A,b);
   gama.min_x();
   gama.solve();
-
+#ifdef TIMING
+  auto end = std::chrono::steady_clock::now();
+  std::chrono::duration<double> elapsed_seconds = end-start;
+  timing.gama = elapsed_seconds.count();
+#endif
   auto unk = gama.unknowns();
   //cout << trans(unk) << trans(gama.residuals());
 
@@ -184,9 +222,20 @@ int test_mtgso1(int index)
         *a1++ = A(r,c);
       }
 
+#ifdef TIMING
+  auto& timing = timings[index];
+  timing.n = n;
+  timing.m = m;
+
+  auto start = std::chrono::steady_clock::now();
+#endif
   mtgso1_(A_mtgso1.get(), &adim, &m1, &n1, &n2, &n4, &mode, &sc, &eps,
           &tol, &nx,  &df, &ier, indx.get(), inds.get(), cp.get());
-
+#ifdef TIMING
+  auto end = std::chrono::steady_clock::now();
+  std::chrono::duration<double> elapsed_seconds = end-start;
+  timing.mtgso1 = elapsed_seconds.count();
+#endif
 
   double max_error {0};
   double* x = A_mtgso1.get() + (m+n)*n + m;
@@ -214,7 +263,7 @@ int main(int argc, char *argv[])
 
   if (argc != 3)
     {
-      std::cerr << "Usage: director files_list.txt\n";
+      std::cerr << "Usage: directory files_list.txt\n";
       return 1;
     }
 
@@ -290,6 +339,54 @@ int main(int argc, char *argv[])
 //  cout << "round example " << round(1.23456789) << endl;
 //  cout << "round example " << round(0.123456789) << endl;
 //  cout << "round example " << round(12345.6789) << endl;
+
+#ifdef TIMING
+  cout << "\ntiming -----------------------------------\n\n";
+
+  int maxname = 0;
+  int maxobs  = 0;
+  for (const auto& t : timings)
+    {
+      const auto& index  = t.first;
+      const auto& timing = t.second;
+      auto file = Vfiles[index].length();
+      if (file > maxname) maxname = file;
+      int obs = timing.m;
+      if (obs > maxobs) maxobs = obs;
+    }
+  int nm = 1 + std::log10(maxobs);
+
+  std::ofstream plot_data (dir + "plot.data");
+
+  for (const auto& t : timings)
+    {
+        int index = t.first;
+        const auto& timing = t.second;
+        std::cout << std::left  << setw(maxname) << Vfiles[index] << " "
+                  << std::right <<setw(nm) << timing.n << "."
+                  << setw(nm) << std::setfill('0') << timing.m
+                  << std::setfill(' ') << "  "
+                  << std::fixed << setw(6) << std::setprecision(2)
+                  << timing.icgs  << "  "
+                  << std::fixed << setw(6) << std::setprecision(2)
+                  << timing.gama << "  "
+                  << std::fixed << setw(6) << std::setprecision(2)
+                  << timing.mtgso1
+                  << endl;
+
+        plot_data << std::left  << setw(maxname) << Vfiles[index] << " "
+                  << std::right <<setw(nm) << timing.n << "."
+                  << setw(nm) << std::setfill('0') << timing.m
+                  << std::setfill(' ') << "  "
+                  << std::fixed << setw(6) << std::setprecision(2)
+                  << timing.icgs  << "  "
+                  << std::fixed << setw(6) << std::setprecision(2)
+                  << timing.gama << "  "
+                  << std::fixed << setw(6) << std::setprecision(2)
+                  << timing.mtgso1
+                  << endl;
+    }
+#endif
 
   return 0;
 }
