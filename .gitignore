@@ -2,7 +2,6 @@
 *.o
 build/
 CMakeLists.txt.user
-gama/
 geodet-pc-mgtso1/
 geodet.pc/
 
