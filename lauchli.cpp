@@ -6,9 +6,28 @@
 
 #include <chrono>
 #include <memory>
+#include <random>
 
 using std::cout;
 using std::endl;
+
+const double maxn = 1000;
+
+#define NUMERICAL_NOISE true
+#if NUMERICAL_NOISE
+
+static std::random_device rd;
+static std::mt19937 gen(rd());
+
+const double eps=1e-11;
+static std::uniform_real_distribution<> uniform_noise(-eps, eps);
+
+const int noise_dim = (2*maxn+1)*(maxn+1);
+double noise[noise_dim];
+
+#endif
+
+
 
 const double rho = 1e-9;
 
@@ -17,7 +36,7 @@ GNU_gama::Mat<> Lauchli(int n)
   GNU_gama::Mat<> t(2*n+1,n+1);
 
   for (int i=1; i<=2*n+1; i++)
-    for (int j=1; j<=n+1; j++)
+    for (int j=1; j<=n/* RHS +1 */; j++)
       {
         t(i,j) = 0;
       }
@@ -27,6 +46,15 @@ GNU_gama::Mat<> Lauchli(int n)
   for (int r=2; r<=n+1; r++) t(r,r-1) = 1;
   for (int r=2; r<=n+1; r++) t(r,n+1) = rho;
   for (int r=1; r<=n; r++)   t(n+r+1,r) = 1;
+
+#ifdef NUMERICAL_NOISE
+  int m = 0;
+  for (int i=1; i<=2*n+1; i++)
+    for (int j=1; j<=n+1; j++)
+      {
+        t(i,j) += noise[m++];
+      }
+#endif
 
   return t;
 }
@@ -113,6 +141,8 @@ extern "C" {
 
 int test_mtgso1(int n)
 {
+
+
   auto A = Lauchli(n);
   // cout << "********************************  " << A;
 
@@ -168,7 +198,12 @@ int test_mtgso1(int n)
 
 int main(int argc, char *argv[])
 {
-  const double maxn = 1000;
+#ifdef NUMERICAL_NOISE
+  {
+    int n = 0;
+    while (n < noise_dim) noise[n++] = uniform_noise(gen);
+  }
+#endif
 
   cout << "\nICGS\n\n";
   auto start = std::chrono::steady_clock::now();
@@ -211,4 +246,3 @@ int main(int argc, char *argv[])
 
   return 0;
 }
-
