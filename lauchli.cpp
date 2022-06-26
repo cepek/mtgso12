@@ -13,13 +13,13 @@ using std::endl;
 
 const double maxn = 1000;
 
-#define NUMERICAL_NOISE true
-#if NUMERICAL_NOISE
+#define NUMERICAL_NOISE
+#ifdef NUMERICAL_NOISE
 
 static std::random_device rd;
 static std::mt19937 gen(rd());
 
-const double eps=1e-11;
+const double eps=1e-12;
 static std::uniform_real_distribution<> uniform_noise(-eps, eps);
 
 const int noise_dim = (2*maxn+1)*(maxn+1);
@@ -36,7 +36,7 @@ GNU_gama::Mat<> Lauchli(int n)
   GNU_gama::Mat<> t(2*n+1,n+1);
 
   for (int i=1; i<=2*n+1; i++)
-    for (int j=1; j<=n/* RHS +1 */; j++)
+    for (int j=1; j<=n+1; j++)
       {
         t(i,j) = 0;
       }
