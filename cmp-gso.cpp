@@ -7,7 +7,7 @@
 #include <memory>
 #include <matvec/matvec.h>
 #include <gnu_gama/adj/adj_gso.h>
-#include <icgs.h>
+#include <gnu_gama/adj/icgs.h>
 
 using std::cout;
 using std::endl;

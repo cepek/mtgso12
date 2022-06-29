@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <cmath>
 #include <matvec/matvec.h>
-#include "icgs.h"
+#include <gnu_gama/adj/icgs.h>
 
 #include <gnu_gama/adj/adj_gso.h>
 
@@ -30,6 +30,7 @@ std::map<int, Timing> timings;
 using std::cout;
 using std::endl;
 using std::setw;
+using GNU_gama::ICGS;
 
 std::vector<GNU_gama::Mat<>> VB, VA;
 std::vector<GNU_gama::Vec<>> Vb;

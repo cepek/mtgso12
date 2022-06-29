@@ -1,6 +1,6 @@
 #include <iostream>
 #include <matvec/matvec.h>
-#include "icgs.h"
+#include <gnu_gama/adj/icgs.h>
 
 #include <gnu_gama/adj/adj_gso.h>
 
@@ -10,6 +10,7 @@
 
 using std::cout;
 using std::endl;
+using GNU_gama::ICGS;
 
 const double maxn = 1000;
 

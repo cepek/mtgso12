@@ -14,9 +14,9 @@ else
 fi
 
 
-if [ ! -f ./randmat ];
+if [ ! -f ../../build/randmat ];
 then
-    echo "./randmat could not be found"
+    echo "../../build/randmat could not be found"
     exit
 fi
 
@@ -38,7 +38,7 @@ do
 done
 
 ls *$PROJECT_NAME.txt > $PROJECT_NAME-files.txt
-./randmat . $PROJECT_NAME-files.txt
+../../build/randmat . $PROJECT_NAME-files.txt
 
 gnuplot plot.gp
 #evince $PROJECT_NAME.eps &

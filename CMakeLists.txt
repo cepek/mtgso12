@@ -16,8 +16,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(gama/lib .)
 
 add_executable(cmp-gso cmp-gso.cpp gso/mtgso1.f gso/mtgso2.f
-               icgs.h icgs.cpp)
+               gama/lib/gnu_gama/adj/icgs.h gama/lib/gnu_gama/adj/icgs.cpp)
 
-add_executable(lauchli lauchli.cpp icgs.h icgs.cpp gso/mtgso1.f)
+add_executable(lauchli lauchli.cpp gama/lib/gnu_gama/adj/icgs.h gama/lib/gnu_gama/adj/icgs.cpp gso/mtgso1.f)
 
-add_executable(randmat randmat.cpp icgs.h icgs.cpp gso/mtgso1.f)
+add_executable(randmat randmat.cpp gama/lib/gnu_gama/adj/icgs.h gama/lib/gnu_gama/adj/icgs.cpp gso/mtgso1.f)
